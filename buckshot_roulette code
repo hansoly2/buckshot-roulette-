@@ -1,0 +1,1929 @@
+#include <iostream>
+#include <random>
+#include <windows.h>
+
+using namespace std;
+
+class game
+{
+    int bullet[8];
+    int int_turn;
+    int dealer;
+    int bullet_count = 0;
+    int rand_count = 0;
+public:
+    int playerHP = 6;
+    int dealerHP = 6;
+    int reset_c = 0;
+    char char_turn = 'p';
+    int end_game = 0;
+    int damage = 1;
+    int dealerITEM[8] = { 0 };
+    int playerITEM[8] = { 0 };
+    int dealer_phone[2];
+    int chain_c = 0;
+    int itemre = 1;
+    int dealer_glass;
+    int dealer_chain;
+    int dealer_med_ad = 0;
+    int adrenaline_use = -1;
+    game()
+    {
+        reset();
+    }
+
+    void reset()
+    {
+        bullet[8] = { 0 };
+        rand_count = 0;
+        bullet_count = 0;
+
+        int empty_bullet = 0;
+        int full_bullet = 0;
+        while (rand_count < 3)
+        {
+            rand_count = rand() % 10;
+        }
+        for (int i = 0; i < rand_count; i++)
+        {
+            bullet[i] = rand() % 2;
+        }
+
+        for (auto i : bullet)
+        {
+            if (i == 1)
+                full_bullet++;
+            if (i == 0)
+                empty_bullet++;
+        }
+
+        if (full_bullet < 1 || empty_bullet < 1)
+            reset();
+        int_turn = bullet[bullet_count];
+        char_turn = 'p';
+        reset_c = 1;
+    }
+
+    void bullet_c()
+    {
+        bullet_count++;
+        int_turn = bullet[bullet_count];
+        if (int_turn != 1 && int_turn != 0)
+            reset();
+    }
+
+    void shot()
+    {
+        if (char_turn == 'p')
+        {
+            cout << endl << "당신은 딜러를 쏘았습니다." << endl;
+            Sleep(2000);
+            if (int_turn == 1)
+            {
+                cout << "실탄이였습니다." << endl << endl;
+                Sleep(1000);
+                cout << "딜러의 체력이 " << damage << " 떨어집니다." << endl << endl;
+                dealerHP -= damage;
+                char_turn = 'd';
+                see_HP();
+                bullet_c();
+                if (damage == 2)
+                    damage = 1;
+            }
+            else if (int_turn == 0)
+            {
+                cout << "공탄이였습니다." << endl << endl;
+                Sleep(1000);
+                char_turn = 'd';
+                bullet_c();
+                if (damage == 2)
+                    damage = 1;
+            }
+            Sleep(1000);
+            if (reset_c != 1)
+                if (chain_c == 1)
+                {
+                    char_turn = 'p';
+                    cout << "여전히 당신의 턴입니다." << endl << endl;
+                    chain_c = 0;
+                }
+                else
+                    cout << "딜러에게 턴이 넘어갑니다." << endl << endl;
+
+        }
+        else if (char_turn == 'd')
+        {
+            cout << endl << "딜러는 당신을 쏘았습니다." << endl;
+            Sleep(2000);
+            if (int_turn == 1)
+            {
+                cout << "실탄이였습니다." << endl << endl;
+                Sleep(1000);
+                cout << "당신의 체력이 " << damage << " 떨어집니다" << endl << endl;
+                playerHP -= damage;
+                char_turn = 'p';
+                bullet_c();
+                see_HP();
+                if (damage == 2)
+                    damage = 1;
+            }
+            else if (int_turn == 0)
+            {
+                cout << "공탄이였습니다." << endl << endl;
+                Sleep(1000);
+                char_turn = 'p';
+                bullet_c();
+                if (damage == 2)
+                    damage = 1;
+            }
+            Sleep(1000);
+            if (reset_c != 1)
+                if (chain_c == 2)
+                {
+                    char_turn = 'd';
+                    cout << "여전히 딜러의 턴입니다." << endl << endl;
+                    chain_c = 0;
+                }
+                else
+                    cout << "당신에게 턴이 넘어갑니다." << endl << endl;
+        }
+    }
+
+    void self()
+    {
+        if (char_turn == 'p')
+        {
+            cout << endl << "당신은 자기 자신을 쏘았습니다." << endl;
+            Sleep(2000);
+            if (int_turn == 1)
+            {
+                cout << "실탄이였습니다." << endl << endl;
+                Sleep(1000);
+                cout << "당신의 체력이 " << damage << " 떨어집니다." << endl << endl;
+                Sleep(1000);
+                playerHP -= damage;
+                char_turn = 'd';
+                see_HP();
+                bullet_c();
+                if (damage == 2)
+                    damage = 1;
+                if (reset_c != 1)
+                {
+                    cout << "딜러에게 턴이 넘어갑니다." << endl << endl;
+                }
+                Sleep(1000);
+            }
+            else if (int_turn == 0)
+            {
+                cout << "공탄이였습니다." << endl << endl;
+                Sleep(1000);
+                bullet_c();
+                if (damage == 2)
+                    damage = 1;
+                if (reset_c != 1)
+                    cout << "여전히 당신의 턴 입니다." << endl << endl;
+                Sleep(1000);
+            }
+
+        }
+        else if (char_turn = 'd')
+        {
+            cout << endl << "딜러는 자기 자신을 쏘았습니다." << endl;
+            Sleep(2000);
+            if (int_turn == 1)
+            {
+                cout << "실탄이였습니다." << endl << endl;
+                Sleep(1000);
+                cout << "딜러의 체력이 " << damage << " 떨어집니다." << endl << endl;
+                dealerHP -= damage;
+                char_turn = 'p';
+                bullet_c();
+                see_HP();
+                if (damage == 2)
+                    damage = 1;
+                if (reset_c != 1)
+                {
+                    cout << "당신에게 턴이 넘어갑니다." << endl << endl;
+                }
+                Sleep(1000);
+            }
+            else if (int_turn == 0)
+            {
+                cout << "공탄이였습니다." << endl << endl;
+                Sleep(1000);
+                bullet_c();
+                if (damage == 2)
+                    damage = 1;
+                if (reset_c != 1)
+                    cout << "여전히 딜러의 턴 입니다." << endl << endl;
+                Sleep(500);
+            }
+        }
+    }
+
+    void dealer_turn()
+    {
+        // 딜러가 돋보기가 있으면 무조건 돋보기 부터 돋보기 사용후 공탄이면 셀프 실탄이면 톱날이나 수갑 있으면 사용후 샷
+        // 아드레날린이 있을때 돋보기가 없으면 아드레날린 사용후 돋보기 사용
+        // 돋보기 사용후 아드레날린이 있고 수갑이나 톱날이 없으면 아드레날린으로 수갑이나 톱날 사용
+        // 대포폰은 있으면 먼저 사용하고 대포폰에 맞는 곳에 따라 아이템및 상황에 맞게
+        // 피가 2이상 닳아있거나 1이상 닳았는데 담배가 없을시 상한약 사용
+        // 돋보기나 아드레날린 대포폰이 없거나 돋보기를 사용했는데 공탄일시 변환기 사용하여 톱날이나 수갑사용후 샷
+        char_turn = 'd';
+        dealer_chain = 0;
+        dealer_glass = 0;
+        int full_bullet = 0;
+        int empty_bullet = 0;
+        for (int i = bullet_count; i < 8; i++)
+        {
+            if (bullet[i] == 1)
+                full_bullet++;
+            if (bullet[i] == 0)
+                empty_bullet++;
+        }
+
+        phone();
+
+        if (bullet_count == dealer_phone[0])
+        {
+            if (int_turn == dealer_phone[1] == 0)
+            {
+                self();
+                return;
+            }
+            else if (int_turn == dealer_phone[1] == 1)
+            {
+                saw();
+                chain();
+                if (damage != 2 || chain_c != 2)
+                {
+                    adrenaline();
+                }
+
+                shot();
+                return;
+            }
+        }
+
+        tabaco();
+
+        if (dealerHP < 5)
+            med();
+
+        if (empty_bullet == 1 && full_bullet == 0) // 공탄 하나일때 무조건 자기자신
+        {
+            self();
+            return;
+        }
+        if (empty_bullet == 0 && full_bullet == 1) // 공탄 하나일때 무조건 자기자신
+        {
+            shot();
+            return;
+        }
+
+        glass();
+
+        if (dealer_glass == 0)
+        {
+            adrenaline();
+        }
+
+        if (dealer_glass == 1)
+        {
+            saw();
+            chain();
+            if (damage != 2 || chain_c != 2)
+            {
+                adrenaline();
+            }
+
+            shot();
+            return;
+        }
+
+        else if (dealer_glass == 2)
+        {
+            inverter();
+            if (int_turn == 1)
+            {
+                saw();
+                chain();
+                if (damage != 2 || chain_c != 2)
+                {
+                    adrenaline();
+                }
+                shot();
+                return;
+            }
+
+            if (int_turn == 0)
+            {
+                adrenaline();
+            }
+            beer();
+            self();
+            return;
+        }
+
+        chain();
+
+        if (dealer_chain == 1)
+        {
+            shot();
+            return;
+        }
+
+        beer();
+
+        if (full_bullet < empty_bullet && dealer_glass == 0 && dealer_chain == 0)
+            self();
+        else if (full_bullet > empty_bullet && dealer_glass == 0 && dealer_chain == 0)
+            shot();
+        else if (full_bullet == empty_bullet && dealer_glass == 0 && dealer_chain == 0)
+            self();
+
+    }
+
+    void bullet_see()
+    {
+        int empty_bullet = 0;
+        int full_bullet = 0;
+        cout << "bullet : ";
+        for (auto i : bullet)
+        {
+            if (i == 1)
+                full_bullet++;
+            if (i == 0)
+                empty_bullet++;
+        }
+        for (auto i : bullet)
+        {
+            while (full_bullet != 0)
+            {
+                cout << "●" << " ";
+                full_bullet--;
+                Sleep(250);
+            }
+
+            while (empty_bullet != 0)
+            {
+                cout << "○" << " ";
+                empty_bullet--;
+                Sleep(250);
+            }
+        }
+
+
+        cout << endl;
+        Sleep(1000);
+    }
+
+    void see_HP()
+    {
+        cout << "player HP : ";
+        for (int i = 0; i < playerHP; i++)
+        {
+            cout << "■" << " ";
+            Sleep(250);
+        }
+        Sleep(500);
+        cout << "  dealer HP : ";
+        for (int i = 0; i < dealerHP; i++)
+        {
+            cout << "■" << " ";
+            Sleep(250);
+        }
+        cout << endl;
+
+        if (playerHP == 0)
+            end_game = 1;
+        if (dealerHP == 0)
+            end_game = 2;
+    }
+
+    void item()
+    {
+        int clear = 0;
+        Sleep(500);
+        cout << "아이템을 지급합니다" << endl << endl;
+
+        if (itemre == 1)
+        {
+            while (clear != 4)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    dealerITEM[i] = rand() % 10;
+                    playerITEM[i] = rand() % 10;
+
+                    if (dealerITEM[i] != 0 && playerITEM[i] != 0)
+                        clear++;
+                    else
+                    {
+                        clear = 0;
+                        break;
+                    }
+                }
+                if (clear == 0)
+                    continue;
+
+            }
+        }
+
+        if (itemre == 2)
+        {
+            int count = 0;
+            clear = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] != 0)
+                    count++;
+            }
+
+            while (clear != 4)
+            {
+                for (int i = count; i < count + 4; i++)
+                {
+                    playerITEM[i] = rand() % 10;
+
+                    if (playerITEM[i] != 0)
+                        clear++;
+                    else
+                    {
+                        clear = 0;
+                        break;
+                    }
+                }
+                if (clear == 0)
+                    continue;
+
+            }
+            clear = 0;
+            count = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] != 0)
+                    count++;
+            }
+            while (clear != 4)
+            {
+                for (int i = count; i < count + 4; i++)
+                {
+                    dealerITEM[i] = rand() % 10;
+
+                    if (dealerITEM[i] != 0)
+                        clear++;
+                    else
+                    {
+                        clear = 0;
+                        break;
+                    }
+                }
+                if (clear == 0)
+                    continue;
+            }
+        }
+        item_see();
+    }
+
+    void item_see()
+    {
+        cout << "ITEM : ";
+        for (auto i : playerITEM)
+        {
+            if (i == 1)
+            {
+                cout << "돋보기( 1 ) ";
+                Sleep(300);
+            }
+            if (i == 2)
+            {
+                cout << "톱날( 2 ) ";
+                Sleep(300);
+            }
+            if (i == 3)
+            {
+                cout << "담배( 3 ) ";
+                Sleep(300);
+            }
+            if (i == 4)
+            {
+                cout << "수갑( 4 ) ";
+                Sleep(300);
+            }
+            if (i == 5)
+            {
+                cout << "맥주( 5 ) ";
+                Sleep(300);
+            }
+            if (i == 6)
+            {
+                cout << "대포폰( 6 ) ";
+                Sleep(300);
+            }
+            if (i == 7)
+            {
+                cout << "변환기( 7 ) ";
+                Sleep(300);
+            }
+            if (i == 8)
+            {
+                cout << "아드레날린( 8 ) ";
+                Sleep(300);
+            }
+            if (i == 9)
+            {
+                cout << "상한 약( 9 ) ";
+                Sleep(300);
+            }
+        }
+        cout << endl << "dealerITEM : ";
+        for (auto i : dealerITEM)
+        {
+            if (i == 1)
+            {
+                cout << "돋보기( 1 ) ";
+                Sleep(300);
+            }
+            if (i == 2)
+            {
+                cout << "톱날( 2 ) ";
+                Sleep(300);
+            }
+            if (i == 3)
+            {
+                cout << "담배( 3 ) ";
+                Sleep(300);
+            }
+            if (i == 4)
+            {
+                cout << "수갑( 4 ) ";
+                Sleep(300);
+            }
+            if (i == 5)
+            {
+                cout << "맥주( 5 ) ";
+                Sleep(300);
+            }
+            if (i == 6)
+            {
+                cout << "대포폰( 6 ) ";
+                Sleep(300);
+            }
+            if (i == 7)
+            {
+                cout << "변환기( 7 ) ";
+                Sleep(300);
+            }
+            if (i == 8)
+            {
+                cout << "아드레날린( 8 ) ";
+                Sleep(300);
+            }
+            if (i == 9)
+            {
+                cout << "상한 약( 9 ) ";
+                Sleep(300);
+            }
+        }
+        cout << endl << endl;
+    }
+
+    void glass() // 1
+    {
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 1)
+                {
+                    cout << "당신은 딜러의 돋보기를 훔쳐서 사용했습니다" << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전 되어있는 탄을 보여줍니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 1)
+                        cout << "실탄이 장전되어 있습니다." << endl << endl;
+                    if (int_turn == 0)
+                        cout << "공탄이 장전되어 있습니다." << endl << endl;
+                    dealerITEM[i] = 0;
+                    break;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 돋보기를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 1)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 돋보기를 훔쳐서 사용했습니다" << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전 되어있는 탄을 보여줍니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 1)
+                    {
+                        dealer_glass = 1;
+                    }
+                    else if (int_turn == 0)
+                    {
+                        dealer_glass = 2;
+                    }
+                    playerITEM[i] = 0;
+                    return;
+                }
+            }
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 1)
+                {
+                    cout << "당신은 돋보기를 사용하였습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전 되어있는 탄을 보여줍니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 1)
+                        cout << "실탄이 장전되어 있습니다." << endl << endl;
+                    if (int_turn == 0)
+                        cout << "공탄이 장전되어 있습니다." << endl << endl;
+                    playerITEM[i] = 0;
+                    return;
+                }
+                else
+                    count++;
+            }
+
+            if (count == 8)
+                cout << "당신은 지금 돋보기를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+
+        if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 1)
+                {
+                    dealerITEM[i] = 0;
+                    cout << "딜러가 돋보기를 사용하였습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전 되어있는 탄을 보여줍니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 1)
+                    {
+                        dealer_glass = 1;
+                        break;
+                    }
+                    else if (int_turn == 0)
+                    {
+                        dealer_glass = 2;
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+    }
+
+    void saw() // 2
+    {
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 2)
+                {
+                    cout << "당신은 딜러의 톱날을 훔쳐서 사용했습니다" << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 탄의 데미지가 2가 됩니다" << endl << endl;
+                    Sleep(1000);
+                    damage = 2;
+                    dealerITEM[i] = 0;
+                    return;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 톱날을 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 2)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 톱날을 훔쳐서 사용했습니다" << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 탄의 데미지가 2가 됩니다" << endl << endl;
+                    Sleep(1000);
+                    damage = 2;
+                    playerITEM[i] = 0;
+                    return;
+                }
+            }
+            return;
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 2)
+                {
+                    cout << "당신은 톱날을 사용하였습니다" << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 탄의 데미지가 2가 됩니다" << endl << endl;
+                    Sleep(1000);
+                    damage = 2;
+                    playerITEM[i] = 0;
+                    return;
+                }
+                else count++;
+            }
+            if (count == 8)
+                cout << "당신은 지금 톱날을 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 2)
+                {
+                    cout << "딜러가 톱날을 사용하였습니다" << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 탄의 데미지가 2가 됩니다" << endl << endl;
+                    Sleep(1000);
+                    damage = 2;
+                    dealerITEM[i] = 0;
+                    return;
+                }
+            }
+            return;
+        }
+    }
+
+    void tabaco() // 3
+    {
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 3)
+                {
+                    cout << "당신은 딜러의 담배를 훔쳐서 피었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "당신의 체력이 1 회복됩니다." << endl << endl;
+                    Sleep(1000);
+                    if (playerHP == 6)
+                    {
+                        cout << "당신의 체력은 이미 꽉 차있습니다." << endl << endl;
+                        return;
+                    }
+                    else
+                    {
+                        playerHP++;
+                        dealerITEM[i] = 0;
+                        return;
+                    }
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 담배를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 3)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 담배를 훔쳐서 피었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러의 체력이 1 회복됩니다." << endl << endl;
+                    Sleep(1000);
+                    dealerHP++;
+                    playerITEM[i] = 0;
+                    return;
+                }
+            }
+            dealer_med_ad = 1;
+            return;
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 3)
+                {
+                    cout << "당신은 담배를 피었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "당신의 체력이 1 회복됩니다." << endl << endl;
+                    Sleep(1000);
+                    if (playerHP == 6)
+                    {
+                        cout << "당신의 체력은 이미 꽉 차있습니다." << endl << endl;
+                        return;
+                    }
+                    else
+                    {
+                        playerHP++;
+                        playerITEM[i] = 0;
+                        return;
+                    }
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "당신은 지금 담배를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        if (char_turn == 'd')
+        {
+            if (dealerHP >= 6)
+                return;
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 3)
+                {
+                    cout << "딜러가 담배를 피었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러의 체력이 1 회복됩니다." << endl << endl;
+                    Sleep(1000);
+                    dealerHP++;
+                    dealerITEM[i] = 0;
+                    return;
+                }
+            }
+            adrenaline();
+            dealer_med_ad = 1;
+            return;
+        }
+    }
+
+    void chain() // 4
+    {
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 4)
+                {
+                    cout << "당신은 딜러의 수갑를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 턴도 당신의 턴이 됩니다" << endl << endl;
+                    Sleep(1000);
+                    chain_c = 1;
+                    dealerITEM[i] = 0;
+                    return;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 수갑을 가지고 있지 않습니다" << endl << endl;
+            Sleep(500);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 4)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 수갑를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 턴도 딜러의 턴이 됩니다" << endl << endl;
+                    Sleep(1000);
+                    chain_c = 2;
+                    playerITEM[i] = 0;
+                    return;
+                }
+            }
+            return;
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 4)
+                {
+                    cout << "당신은 수갑을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 턴도 당신의 턴이 됩니다" << endl << endl;
+                    Sleep(1000);
+                    chain_c = 1;
+                    playerITEM[i] = 0;
+                    return;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "당신은 지금 수갑을 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 4)
+                {
+                    cout << "딜러가 수갑을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "다음 턴도 딜러의 턴이 됩니다" << endl << endl;
+                    Sleep(1000);
+                    chain_c = 2;
+                    dealerITEM[i] = 0;
+                    return;
+                }
+            }
+        }
+    }
+
+    void beer() // 5
+    {
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 5)
+                {
+                    cout << "당신은 딜러의 맥주를 훔쳐서 마셧습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 하나 버립니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        cout << "공탄을 하나 버렸습니다." << endl << endl;
+                    if (int_turn == 1)
+                        cout << "실탄을 하나 버렸습니다." << endl << endl;
+                    bullet_c();
+                    dealerITEM[i] = 0;
+                    return;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 맥주를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 5)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 맥주를 훔쳐서 마셧습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 하나 버립니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        cout << "공탄을 하나 버렸습니다." << endl << endl;
+                    if (int_turn == 1)
+                        cout << "실탄을 하나 버렸습니다." << endl << endl;
+                    bullet_c();
+                    playerITEM[i] = 0;
+                    return;
+                }
+            }
+            phone();
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 5)
+                {
+                    cout << "당신은 맥주을 마십니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 하나 버립니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        cout << "공탄을 하나 버렸습니다." << endl << endl;
+                    if (int_turn == 1)
+                        cout << "실탄을 하나 버렸습니다." << endl << endl;
+                    bullet_c();
+                    playerITEM[i] = 0;
+                    break;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "당신은 지금 맥주를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        else if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 5)
+                {
+                    cout << "딜러는 맥주을 마십니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 하나 버립니다." << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        cout << "공탄을 하나 버렸습니다." << endl << endl;
+                    if (int_turn == 1)
+                        cout << "실탄을 하나 버렸습니다." << endl << endl;
+                    bullet_c();
+                    dealerITEM[i] = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    void phone() // 6
+    {
+        int rand_num;
+        while (true)
+        {
+            rand_num = rand() % rand_count;
+            if (char_turn == 'p' && rand_count - bullet_count == 1)
+            {
+                cout << "안타깝게... 됐군..." << endl << endl;
+                Sleep(1000);
+                return;
+            }
+            if (char_turn == 'd' && rand_count - bullet_count == 1)
+            {
+                return;
+            }
+            if (rand_num < bullet_count)
+                continue;
+            else if (rand_num > bullet_count)
+                break;
+        }
+
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 6)
+                {
+                    cout << "당신은 딜러의 대포폰를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "랜덤한 곳에 있는 총알을 알려줍니다" << endl << endl;
+                    Sleep(1000);
+                    cout << rand_num - 1 << "번째 총알은 ";
+                    if (bullet[rand_num] == 0)
+                        cout << "공탄입니다." << endl << endl;
+                    else if (bullet[rand_num] == 1)
+                        cout << "실탄입니다." << endl << endl;
+
+                    dealerITEM[i] = 0;
+                    break;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 대포폰를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 5)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 대포폰를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "랜덤한 곳에 있는 총알을 알려줍니다" << endl << endl;
+                    Sleep(1000);
+                    if (bullet[rand_num] == 0)
+                    {
+                        dealer_phone[0] = rand_num - 1;
+                        dealer_phone[1] = 0;
+                    }
+                    if (bullet[rand_num] == 1)
+                    {
+                        dealer_phone[0] = rand_num - 1;
+                        dealer_phone[1] = 1;
+                    }
+                    playerITEM[i] = 0;
+                    break;
+                }
+            }
+            return;
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 6)
+                {
+                    cout << "당신은 대포폰를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "랜덤한 곳에 있는 총알을 알려줍니다" << endl << endl;
+                    Sleep(1000);
+                    cout << rand_num + 1 << "번째 총알은 ";
+                    if (bullet[rand_num] == 0)
+                        cout << "공탄입니다." << endl << endl;
+                    else if (bullet[rand_num] == 1)
+                        cout << "실탄입니다." << endl << endl;
+
+                    playerITEM[i] = 0;
+                    break;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "당신은 지금 대포폰를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        else if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 6)
+                {
+                    cout << "딜러가 대포폰를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "랜덤한 곳에 있는 총알을 알려줍니다" << endl << endl;
+                    Sleep(1000);
+                    if (bullet[rand_num] == 0)
+                    {
+                        dealer_phone[0] = rand_num - 1;
+                        dealer_phone[1] = 0;
+                    }
+                    if (bullet[rand_num] == 1)
+                    {
+                        dealer_phone[0] = rand_num - 1;
+                        dealer_phone[1] = 1;
+                    }
+                    dealerITEM[i] = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    void inverter() // 7
+    {
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 7)
+                {
+                    cout << "당신은 딜러의 변환기를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 뒤바꿉니다." << endl << "( 공탄 <=> 실탄 )" << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        int_turn = 1;
+                    else if (int_turn == 1)
+                        int_turn = 0;
+                    dealerITEM[i] = 0;
+                    break;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 변환기를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 7)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 변환기를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 뒤바꿉니다." << endl << "( 공탄 <=> 실탄 )" << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        int_turn = 1;
+                    else if (int_turn == 1)
+                        int_turn = 0;
+                    playerITEM[i] = 0;
+                    break;
+                }
+            }
+            beer();
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 7)
+                {
+                    cout << "당신은 변환기를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 뒤바꿉니다." << endl << "( 공탄 <=> 실탄 )" << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        int_turn = 1;
+                    else if (int_turn == 1)
+                        int_turn = 0;
+                    playerITEM[i] = 0;
+                    break;
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "당신은 지금 변환기를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        else if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 7)
+                {
+                    cout << "딜러가 변환기를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "지금 장전된 총알을 뒤바꿉니다." << endl << "( 공탄 <=> 실탄 )" << endl << endl;
+                    Sleep(1000);
+                    if (int_turn == 0)
+                        int_turn = 1;
+                    else if (int_turn == 1)
+                        int_turn = 0;
+                    dealerITEM[i] = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    void adrenaline() // 8
+    {
+        int item_select;
+        bool select = true;
+        if (char_turn == 'p')
+        {
+            item_select = 0;
+            adrenaline_use = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 8)
+                {
+                    cout << "당신은 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "상대방의 아이템중 하나를 가져옵니다." << endl << endl;
+                    Sleep(1000);
+
+                    cout << "dealerITEM : ";
+                    for (auto i : dealerITEM)
+                    {
+                        if (i == 1)
+                        {
+                            cout << "돋보기( 1 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 2)
+                        {
+                            cout << "톱날( 2 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 3)
+                        {
+                            cout << "담배( 3 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 4)
+                        {
+                            cout << "수갑( 4 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 5)
+                        {
+                            cout << "맥주( 5 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 6)
+                        {
+                            cout << "대포폰( 6 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 7)
+                        {
+                            cout << "변환기( 7 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 8)
+                        {
+                            cout << "아드레날린( 8 ) ";
+                            Sleep(300);
+                        }
+                        if (i == 9)
+                        {
+                            cout << "상한 약( 9 ) ";
+                            Sleep(300);
+                        }
+                    }
+                    cout << "선택 : ";
+
+                    while (select)
+                    {
+                        cin >> item_select;
+                        int count = 0;
+                        switch (item_select)
+                        {
+                        case 1:
+                            select = false;
+                            glass();
+                            break;
+                        case 2:
+                            select = false;
+                            saw();
+                            break;
+                        case 3:
+                            select = false;
+                            tabaco();
+                            break;
+                        case 4:
+                            select = false;
+                            chain();
+                            break;
+                        case 5:
+                            select = false;
+                            beer();
+                            break;
+                        case 6:
+                            select = false;
+                            phone();
+                            break;
+                        case 7:
+                            select = false;
+                            inverter();
+                            break;
+                        case 8:
+                            select = false;
+                            adrenaline();
+                            break;
+                        case 9:
+                            select = false;
+                            med();
+                            break;
+                        }
+                    }
+                    playerITEM[i] = 0;
+                    adrenaline_use = -1;
+                    break;
+                }
+            }
+        }
+        else if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 8)
+                {
+                    adrenaline_use = 1;
+
+                    if (dealer_med_ad == 1)
+                        med();
+
+                    if (dealer_glass == 0)
+                        glass();
+                    if (chain_c == 2 && damage != 2)
+                        saw();
+                    if (chain_c != 2 && damage == 2)
+                        chain();
+                    if (dealer_glass == 2)
+                        inverter();
+
+                    adrenaline_use = -1;
+                    return;
+                }
+            }
+        }
+    }
+
+    void med() // 9
+    {
+        int medcine = rand() % 2;
+        int count = 0;
+
+        if (adrenaline_use == 0)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 9)
+                {
+                    cout << "당신은 딜러의 상한약을 훔쳐서 먹었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "체력을 2 회복하거나 1 닳습니다." << endl << endl;
+                    Sleep(1000);
+                    if (medcine == 1)
+                    {
+                        if (playerHP + 2 >= 6)
+                        {
+                            cout << "당신은 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            playerHP = 6;
+                            see_HP();
+                            dealerITEM[i] = 0;
+                            break;
+                        }
+                        else
+                        {
+                            cout << "당신은 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            playerHP += 2;
+                            see_HP();
+                            dealerITEM[i] = 0;
+                            break;
+                        }
+                    }
+                    else if (medcine == 0)
+                    {
+                        cout << "당신은 행운의 신의 선택을 받지 못했습니다 체력이 1 떨어집니다." << endl << endl;
+                        Sleep(1000);
+                        playerHP--;
+                        see_HP();
+                        dealerITEM[i] = 0;
+                        break;
+                    }
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 상한약를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+
+        if (adrenaline_use == 1)
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 9)
+                {
+                    cout << "딜러가 아드레날린을 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신이 가진 아이템중 하나를 사용합니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "딜러가 당신의 상한약를 훔쳐서 사용했습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "체력을 2 회복하거나 1 닳습니다." << endl << endl;
+                    Sleep(1000);
+                    if (medcine == 1)
+                    {
+                        if (dealerHP + 2 >= 6)
+                        {
+                            cout << "딜러가 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            dealerHP = 6;
+                            see_HP();
+                            playerITEM[i] = 0;
+                            break;
+                        }
+                        else
+                        {
+                            cout << "딜러가 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            dealerHP += 2;
+                            see_HP();
+                            playerITEM[i] = 0;
+                            break;
+                        }
+                    }
+                    else if (medcine == 2)
+                    {
+                        cout << "딜러는 행운의 신의 선택을 받지 못했습니다 체력이 1 떨어집니다." << endl << endl;
+                        Sleep(1000);
+                        dealerHP--;
+                        see_HP();
+                        playerITEM[i] = 0;
+                        break;
+                    }
+                }
+            }
+            return;
+        }
+
+        if (char_turn == 'p')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (playerITEM[i] == 9)
+                {
+                    cout << "당신은 상한약을 먹었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "체력을 2 회복하거나 1 닳습니다." << endl << endl;
+                    Sleep(1000);
+                    if (medcine == 1)
+                    {
+                        if (playerHP + 2 >= 6)
+                        {
+                            cout << "당신은 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            playerHP = 6;
+                            see_HP();
+                            playerITEM[i] = 0;
+                            break;
+                        }
+                        else
+                        {
+                            cout << "당신은 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            playerHP += 2;
+                            see_HP();
+                            playerITEM[i] = 0;
+                            break;
+                        }
+                    }
+                    else if (medcine == 0)
+                    {
+                        cout << "당신은 행운의 신의 선택을 받지 못했습니다 체력이 1 떨어집니다." << endl << endl;
+                        Sleep(1000);
+                        playerHP--;
+                        see_HP();
+                        playerITEM[i] = 0;
+                        break;
+                    }
+                }
+                else
+                    count++;
+            }
+            if (count == 8)
+                cout << "딜러가 지금 상한약를 가지고 있지 않습니다" << endl << endl;
+            Sleep(1000);
+            return;
+        }
+        if (char_turn == 'd')
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                if (dealerITEM[i] == 9)
+                {
+                    cout << "딜러는 상한약을 먹었습니다." << endl << endl;
+                    Sleep(1000);
+                    cout << "체력을 2 회복하거나 1 닳습니다." << endl << endl;
+                    Sleep(1000);
+                    if (medcine == 0)
+                    {
+                        if (dealerHP + 2 >= 6)
+                        {
+                            cout << "딜러가 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            dealerHP = 6;
+                            see_HP();
+                            dealerITEM[i] = 0;
+                            break;
+                        }
+                        else
+                        {
+                            cout << "딜러가 행운의 신의 선택을 받았습니다." << endl << "체력이 회복됩니다." << endl << endl;
+                            Sleep(1000);
+                            dealerHP += 2;
+                            see_HP();
+                            dealerITEM[i] = 0;
+                            break;
+                        }
+                    }
+                    else if (medcine == 1)
+                    {
+                        cout << "딜러는 행운의 신의 선택을 받지 못했습니다 체력이 1 떨어집니다." << endl << endl;
+                        Sleep(1000);
+                        dealerHP--;
+                        see_HP();
+                        dealerITEM[i] = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+};
+
+int main()
+{
+    srand(time(NULL));
+    SetConsoleTitle(TEXT("buckshot roulette"));
+    game games;
+    int choice;
+    char select;
+
+    cout << "당신은 아무것도 보이지 않는곳에 앉아있습니다." << endl;
+    Sleep(1000);
+    cout << "곧 딜러가 들어와 얘기를 합니다." << endl;
+    Sleep(1000);
+    cout << "\"게임을 시작하지 설명이 필요한가?\"" << endl;
+    Sleep(1000);
+    cout << "게임의 설명이 필요하다 y or n : ";
+    cin >> select;
+
+    if (select == 'y')
+    {
+        cout << endl <<"알겠다 간단하게 설명해주지" << endl;
+        Sleep(1000);
+        cout << "이건 러시안 룰렛 같은 게임이다." << endl;
+        Sleep(1000);
+        cout << "시작하면 총알을 보여준다 공탄과 실탄으로 나뉘어있고," << endl;
+        Sleep(1000);
+        cout << "너는 자신을 쏠건지 딜러인 나를 쏠껀지 선택할수 있다." << endl;
+        Sleep(1000);
+        cout << "총을 상대한테 쏘면 턴은 상대에게 넘어간다 수갑을 사용하지 않았을때 말이지" << endl;
+        Sleep(1000);
+        cout << "그리고 자기 자신을 쏘면 공탄이면 다시 자기 자신의 턴이 된다." << endl;
+        Sleep(1000);
+        cout << "아이템을 사용하고 싶으면 2번을 눌러 아이템 사용으로 들어가 원하는 아이템의 번호를 누르면 된다." << endl;
+        Sleep(1000);
+        cout << "아이템의 설명이 필요하면 3번을 눌러라" << endl;
+        Sleep(1000);
+        cout << "이정도면 설명은 충분한거 같으니 바로 시작하겠다." << endl;
+        Sleep(5000);
+    }
+    
+    if (select == 'n')
+    {
+        cout << endl << "당돌한 녀석이군" << endl;
+        Sleep(1000);
+        cout << "바로 시작하겠다." << endl;
+        Sleep(2000);
+        select = 'y';
+    }
+
+    system("cls");
+
+    while (select == 'y')
+    {
+        if (games.end_game == 1)
+        {
+            system("cls");
+            cout << "\"안타깝군 날 이기지 못했군 수고했다." << endl << endl;
+            Sleep(1000);
+            cout << "당신의 체력이 전부 소신 되었습니다" << endl << endl;
+            Sleep(1000);
+            cout << "당신이 패배 하였습니다" << endl << endl;
+            Sleep(1000);
+            cout << "당신은 딜러의 영원한 장난감이 되었습니다" << endl;
+            break;
+        }
+
+        if (games.end_game == 2)
+        {
+            system("cls");
+            cout << "딜러의 체력이 전부 소진 되었습니다." << endl << endl;
+            Sleep(1000);
+            cout << "딜러가 패배 하였습니다." << endl << endl;
+            Sleep(1000);
+            cout << "잘하는군.. 내가 졌다.." << endl << endl;
+            Sleep(1000);
+            cout << "넌 다시 안전한 집으로 돌아갈수 있다 너의 유흥을 위해서 더 하겠다 안전한 집으로 돌아가겠나" << endl << endl;
+            Sleep(1000);
+            cout << "계속해서 게임을 하거나 집으로 돌아갈수 있습니다 ( 계속 한다 : y, 돌아간다 : n )";
+            cin >> select;
+            if (select == 'n')
+                break;
+            if (select == 'y')
+            {
+                games.chain_c = 0;
+                games.adrenaline_use = -1;
+                games.char_turn = 'p';
+                games.damage = 1;
+                games.itemre = 1;
+                games.reset_c = 1;
+                games.reset();
+                games.dealerHP = 6;
+                games.playerHP = 6;
+                for (int i = 0; i < 8; i++)
+                {
+                    games.dealerITEM[i] = 0;
+                    games.playerITEM[i] = 0;
+                }
+                cout << "당신은 한번 더 딜러에게 도전하기로 합니다.";
+                Sleep(5000);
+                system("cls");
+                continue;
+            }
+        }
+
+        if (games.char_turn == 'p')
+        {
+
+            if (games.reset_c == 1)
+            {
+                games.reset_c = 0;
+
+                games.bullet_see();
+
+                games.see_HP();
+
+                if (games.itemre == 1)
+                {
+                    games.item();
+                    games.itemre = 0;
+                }
+                else if (games.itemre == 2)
+                {
+                    games.item();
+                    games.itemre = 0;
+                }
+                else
+                    games.item_see();
+            }
+
+
+            cout << "총알을 누구에게 쏘시겠습니까( player : 0, dealer : 1 , item : 2, 아이템 설명 : 3 ) : ";
+            cin >> choice;
+
+            if (choice == 1)
+                games.shot();
+            if (choice == 0)
+                games.self();
+            if (choice == 2)
+                while (true)
+                {
+                    cout << "아이템 사용 ( 나가기 : 0 ) : ";
+                    cin >> choice;
+
+                    if (choice == 1)
+                        games.glass();
+                    if (choice == 2)
+                        games.saw();
+                    if (choice == 3)
+                        games.tabaco();
+                    if (choice == 4)
+                        games.chain();
+                    if (choice == 5)
+                        games.beer();
+                    if (choice == 6)
+                        games.phone();
+                    if (choice == 7)
+                        games.inverter();
+                    if (choice == 8)
+                        games.adrenaline();
+                    if (choice == 9)
+                        games.med();
+                    if (choice == 0)
+                        break;
+
+                    games.item_see();
+                }
+            if (choice == 3)
+            {
+                cout << "=========================================" << endl;
+                cout << "돋보기 : 지금 장전된 탄을 보여줍니다." << endl
+                    << "톱날 : 장전된 탄의 데미지가 2가 됩니다." << endl
+                    << "담배 : 체력 1을 회복합니다." << endl
+                    << "수갑 : 상대의 움직임을 한번 막습니다," << endl
+                    << "맥주 : 지금 장전된 탄을 버립니다." << endl
+                    << "대포폰 : 랜덤한 곳에 있는 탄환을 알려줍니다." << endl
+                    << "변환기 : 지금 장전된 탄환을 바꿉니다 ( 실탄 <=> 공탄)" << endl
+                    << "아드레날린 : 상대방의 아이템을 하나 가져와서 사용합니다." << endl
+                    << "상한 약 : 체력 2를 회복하거나 1만큼 체력을 잃습니다." << endl << endl;
+            }
+
+            choice = NULL;
+        }
+        if (games.end_game == 1)
+        {
+            system("cls");
+            cout << "\"안타깝군 날 이기지 못했군 수고했다." << endl << endl;
+            Sleep(1000);
+            cout << "당신의 체력이 전부 소신 되었습니다" << endl << endl;
+            Sleep(1000);
+            cout << "당신이 패배 하였습니다" << endl << endl;
+            Sleep(1000);
+            cout << "당신은 딜러의 영원한 장난감이 되었습니다" << endl;
+            break;
+        }
+
+        if (games.end_game == 2)
+        {
+            system("cls");
+            cout << "딜러의 체력이 전부 소진 되었습니다." << endl << endl;
+            Sleep(1000);
+            cout << "딜러가 패배 하였습니다." << endl << endl;
+            Sleep(1000);
+            cout << "잘하는군.. 내가 졌다.." << endl << endl;
+            Sleep(1000);
+            cout << "넌 다시 안전한 집으로 돌아갈수 있다 너의 유흥을 위해서 더 하겠다 안전한 집으로 돌아가겠나" << endl << endl;
+            Sleep(1000);
+            cout << "계속해서 게임을 하거나 집으로 돌아갈수 있습니다 ( 계속 한다 : y, 돌아간다 : n )";
+            cin >> select;
+            if (select == 'n')
+                break;
+            if (select == 'y')
+            {
+                games.chain_c = 0;
+                games.adrenaline_use = -1;
+                games.char_turn = 'p';
+                games.damage = 1;
+                games.itemre = 1;
+                games.reset_c = 1;
+                games.reset();
+                games.dealerHP = 6;
+                games.playerHP = 6;
+                for (int i = 0; i < 8; i++)
+                {
+                    games.dealerITEM[i] = 0;
+                    games.playerITEM[i] = 0;
+                }
+                cout << "당신은 한번 더 딜러에게 도전하기로 합니다.";
+                Sleep(5000);
+                system("cls");
+                continue;
+            }
+        }
+        if (games.char_turn == 'd')
+        {
+            cout << "딜러의 턴 입니다." << endl;
+            games.dealer_turn();
+        }
+        if (games.reset_c == 1)
+        {
+            system("cls");
+            cout << endl << "재장전 합니다." << endl;
+            games.chain_c = 0;
+            games.itemre = 2;
+            continue;
+        }
+    }
+
+    cout << endl << "당신은 딜러를 이기고 안전한 집으로 돌아갔습니다." << endl;
+
+}
